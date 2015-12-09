@@ -1,0 +1,34 @@
+{
+    "id": 123456,
+    "date": "2015/12/9",
+    "client": {
+        "fullName": "Jean Dupont",
+        "company": "Forutnate Business SAS",
+        "address1": "42 Avenue des Champs-Élysées",
+        "zip": 75000,
+        "city": "Paris",
+        "country": "France"
+    },
+    "items": [
+        {
+            "label": "Blue shirt",
+            "description": "A shirt that looks good on you",
+            "quantity": 1,
+            "unitPrice": 20,
+            "total": 20
+        },
+        {
+            "label": "Cat Food",
+            "description": "Because you care about him",
+            "quantity": 7,
+            "unitPrice": 2,
+            "total": 14
+        }
+    ],
+    "subTotal": "34",
+    "vat": "20",
+    "tax": "6.80",
+    "total": "40.80",
+    "due": "2015/12/9",
+    "paid": "2015/12/9"
+}

@@ -1,15 +1,17 @@
 package main
 
 import (
+	"fmt"
 	"github.com/spf13/viper"
 	"io/ioutil"
 	"log"
+	"os/exec"
 	"path/filepath"
 )
 
 var (
-	Addr, Port, Root string
-	Templates        = make(map[string]*Template)
+	Addr, Port, Root, FakeUrl string
+	Templates                 = make(map[string]*Template)
 )
 
 func init() {
@@ -22,10 +24,14 @@ func init() {
 	viper.SetDefault("addr", "0.0.0.0")
 
 	viper.BindEnv("templates")
-	viper.SetDefault("templates", ".")
+	viper.SetDefault("templates", "templates")
 }
 
 func configRead() {
+	if _, err := exec.LookPath("wkhtmltopdf"); err != nil {
+		log.Fatal("executable wkhtmltopdf could not be found in PATH")
+	}
+
 	Addr = viper.GetString("addr")
 	Port = viper.GetString("port")
 
@@ -34,6 +40,8 @@ func configRead() {
 	if Root, err = filepath.Abs(path); err != nil {
 		log.Fatalf("invalid templates dir '%s'", path)
 	}
+
+	fmt.Printf("looking for templates in directory:\n%s\n\n", Root)
 
 	if fi, err := ioutil.ReadDir(Root); err != nil {
 		log.Fatalf("failed to read templates dir '%s'", Root)

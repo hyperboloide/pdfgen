@@ -14,7 +14,6 @@ import (
 
 var (
 	Sessions = cmap.New()
-	FakeUrl  string
 )
 
 func statError(w http.ResponseWriter, status int) {
@@ -37,8 +36,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	decoder := json.NewDecoder(r.Body)
-	var data interface{}
-	if err := decoder.Decode(data); err != nil {
+	var data map[string]interface{}
+	if err := decoder.Decode(&data); err != nil {
 		statError(w, http.StatusBadRequest)
 		return
 	}
@@ -69,7 +68,7 @@ func main() {
 		fmt.Printf("  - %s\n", k)
 	}
 
-	FakeUrl = StartFake()
+	StartFake()
 
 	r := mux.NewRouter()
 	r.HandleFunc("/{template}", Handler)

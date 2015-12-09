@@ -1,0 +1,184 @@
+{{define "index"}}
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="/invoice/bower_components/bootstrap/dist/css/bootstrap.css" media='screen,print'>
+  <title>Invoice {{ .id }}</title>
+</head>
+<body>
+
+  <div class="container-fluid">
+    <br>
+    <br>
+    <div class="row">
+
+      <div class="col-xs-8">
+
+        <h1>Invoice</h1>
+
+        <div>
+          <strong>Number</strong>
+          <samp>{{ .id }}</samp><br>
+          <strong>Date</strong>
+          <samp>{{ .date }}</samp>
+        </div>
+
+      </div>
+      <div class="col-xs-4">
+        <div class="pull-right" style="width: 220px;">
+          <img src="/invoice/cat.jpg" style="height:auto; width:auto; max-height:100px;">
+          <div class="pull-right">
+            <small>
+              <address style="font-size: 90%;">
+                Fake Business sarl<br>
+                42 cool street<br>
+                12345 La Rochelle<br>
+                France<br>
+                TVA : FR 12 345 678 901
+              </address>
+            </small>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <hr>
+
+    <div class="row" style="font-size: 90%;">
+      <div class="col-xs-12">
+
+        <small>
+          <dl class="dl-horizontal">
+
+            <dt>Name</dt>
+            <dd><samp>{{ .client.fullName }}</samp></dd>
+
+            {{ if .client.company }}
+            <dt>Company</dt>
+            <dd><samp>{{ .client.company }}</samp></dd>
+            {{ end }}
+
+            <dt>Address</dt>
+            <dd><samp>{{ .client.address1 }}</samp></dd>
+
+            {{ if .client.address2 }}
+            <dt></dt>
+            <dd><samp>{{ .client.address2 }}</samp></dd>
+            {{ end }}
+
+            <dt>City</dt>
+            <dd><samp>{{ .client.zip }} {{ .client.city }}</samp></dd>
+
+            {{ if .client.state }}
+            <dt>State</dt>
+            <dd><samp>{{ .client.state }}</samp></dd>
+            {{ end }}
+
+            <dt>Country</dt>
+            <dd><samp>{{ .client.country }}</samp></dd>
+
+            {{ if .client.vat }}
+            <dt>Customer VAT</dt>
+            <dd><samp>{{ .client.vat }}</samp></dd>
+            {{ end }}
+          </dl>
+        </small>
+      </div>
+
+    </div>
+
+    <hr>
+
+    <br>
+
+    <div class="row" style="font-size: 90%;">
+      <div class="col-xs-12">
+
+          <table class="table table-bordered table-condensed">
+
+            <tr>
+              <th class="text-center">Designation</th>
+              <th class="text-center">Quantity</th>
+              <th class="text-center">Unit Price excl VAT</th>
+              <th class="text-center">Total excl VAT</th>
+            </tr>
+
+            {{ range .items }}
+            <tr style="font-size: 80%;">
+              <td class="text-center">
+                <samp>
+                  {{ .label }}
+                  {{ if .description }}
+                  <i class="text-muted">{{ .description }}</i>
+                  {{ end }}
+                </samp>
+              </td>
+              <td class="text-right">
+                <samp>{{ .quantity }}</samp>
+              </td>
+              <td class="text-right">
+                <samp>{{ .unitPrice }}&euro;</samp>
+              </td>
+              <td class="text-right">
+                <samp>{{ .total }}&euro;</samp>
+              </td>
+            </tr>
+            {{ end }}
+
+          </table>
+
+      </div>
+
+    </div>
+
+    <div class="row" style="font-size: 90%;">
+      <div class="col-xs-5">
+        {{ if .paid }}
+        <strong>Paid on :</strong>
+        <samp>{{ .paid }}</samp>
+        {{ end }}
+      </div>
+
+      <div class="col-xs-4 col-xs-offset-3">
+        <small>
+          <table class="table table-bordered table-condensed">
+            <tr>
+              <th>Sub Total</th>
+              <td class="text-right">
+                <samp>{{ .subTotal}}&euro;</samp>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                VAT&#42; <samp>{{ .vat }}%</samp>
+              </th>
+              <td class="text-right">
+                <samp>{{ .tax }}&euro;</samp>
+              </td>
+            </tr>
+
+            <tr>
+              <th>Total incl VAT</th>
+              <td class="text-right">
+                <samp>
+                  {{ .total }}&euro;
+                </samp>
+              </td>
+            </tr>
+          </table>
+          <div class="text-center" style="margin-top: -15px;">
+            <strong>Due on :</strong>
+            <samp>{{ .due }}</samp>
+          </div>
+
+        </small>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>
+{{end}}

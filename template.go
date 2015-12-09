@@ -47,7 +47,7 @@ func (t *Template) BuildParams(url string) []string {
 }
 
 func (t *Template) Gen(sessionId string, w io.Writer) error {
-	url := fmt.Sprintf("/%s/%s/%s", FakeUrl, t.url, sessionId)
+	url := fmt.Sprintf("%s/%s/%s", FakeUrl, t.url, sessionId)
 	params := t.BuildParams(url)
 	destDir, err := ioutil.TempDir("", "pdfgen")
 	if err != nil {
@@ -58,7 +58,7 @@ func (t *Template) Gen(sessionId string, w io.Writer) error {
 	output := filepath.Join(destDir, "output.pdf")
 	params = append(
 		params,
-		fmt.Sprintf("%s/index", FakeUrl),
+		fmt.Sprintf("%s/index", url),
 		output)
 
 	cmd := exec.Command("wkhtmltopdf", params...)
@@ -92,9 +92,9 @@ func NewTemplate(root, path string) *Template {
 		url:     path,
 		rootDir: filepath.Join(root, path),
 	}
-	fi, err := ioutil.ReadDir(path)
+	fi, err := ioutil.ReadDir(t.rootDir)
 	if err != nil {
-		log.Fatalf("failed to open template dir '%s'", path)
+		log.Fatalf("failed to open template dir '%s'", t.rootDir)
 	}
 
 	for _, f := range fi {
@@ -110,7 +110,8 @@ func NewTemplate(root, path string) *Template {
 	}
 	t.template, err = template.ParseGlob(filepath.Join(t.rootDir, "**.html"))
 	if err != nil {
-		log.Fatalf("no html file found in dir '%s'", t.rootDir)
+		log.Println(err)
+		log.Fatalf("no valid html file found in dir '%s'", t.rootDir)
 	}
 	if t.template.Lookup("index") == nil {
 		log.Fatalf("template '%s' must have an index", t.url)
