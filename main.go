@@ -3,13 +3,13 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
+	"net/http"
+	"os"
+
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/streamrail/concurrent-map"
-	"log"
-	"math/rand"
-	"net/http"
-	"os"
 )
 
 var (
@@ -38,16 +38,18 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	var data map[string]interface{}
 	if err := decoder.Decode(&data); err != nil {
+		log.Print(err)
 		statError(w, http.StatusBadRequest)
 		return
 	}
-	id := fmt.Sprintf("%d", rand.Int())
-	Sessions.Set(id, data)
-	defer Sessions.Remove(id)
+
 	w.Header().Set("Content-Type", "application/pdf")
-	if err := tmpl.Gen(id, w); err != nil {
+	srv := NewServerEmulator(data, tmpl)
+	defer srv.Close()
+
+	if err := tmpl.WritePDF(srv.BaseURL(), w); err != nil {
+		log.Print(err)
 		statError(w, http.StatusInternalServerError)
-		return
 	}
 }
 
@@ -57,7 +59,7 @@ func main() {
 	nb := len(Templates)
 	switch nb {
 	case 0:
-		fmt.Println("No templates found, exiting.")
+		fmt.Println("No template found, exiting.")
 		return
 	case 1:
 		fmt.Println("1 template found:")
@@ -68,13 +70,17 @@ func main() {
 		fmt.Printf("  - %s\n", k)
 	}
 
-	StartFake()
+	fmt.Printf("accepting connections on %s:%s\n", Addr, Port)
 
 	r := mux.NewRouter()
 	r.HandleFunc("/{template}", Handler)
-	mddw := handlers.LoggingHandler(os.Stdout, handlers.CompressHandler(r))
-	fmt.Printf("accepting connections on %s:%s\n", Addr, Port)
-	if err := http.ListenAndServe(fmt.Sprintf("%s:%s", Addr, Port), mddw); err != nil {
+
+	err := http.ListenAndServe(
+		fmt.Sprintf("%s:%s", Addr, Port),
+		handlers.LoggingHandler(
+			os.Stdout,
+			handlers.CompressHandler(r)))
+	if err != nil {
 		log.Fatal(err)
 	}
 }

@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/spf13/viper"
 	"io/ioutil"
 	"log"
 	"os/exec"
 	"path/filepath"
+
+	"github.com/spf13/viper"
 )
 
 var (
@@ -24,7 +25,7 @@ func init() {
 	viper.SetDefault("addr", "0.0.0.0")
 
 	viper.BindEnv("templates")
-	viper.SetDefault("templates", "templates")
+	viper.SetDefault("templates", "./templates")
 }
 
 func configRead() {

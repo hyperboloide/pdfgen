@@ -24,3 +24,5 @@ _testmain.go
 *.prof
 pdfgen
 templates/demo.pdf
+vendor
+glide.lock

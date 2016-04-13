@@ -4,7 +4,7 @@ DOCKERID = hyperboloide
 
 
 all:
-	go build -v
+	go build
 
 clean:
 	rm -fr $(NAME)
@@ -19,7 +19,7 @@ container: clean
 	GOOS=linux GOARCH=amd64 go build -a
 	docker build -t $(DOCKERID)/$(NAME) .
 
-dockerhub: container
+push: container
 	docker push     $(DOCKERID)/$(NAME)
 
-.PHONY: all clean fmt test
+.PHONY: all clean fmt test container push
