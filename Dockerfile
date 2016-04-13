@@ -20,3 +20,5 @@ RUN dpkg -i /tmp/wkhtmltox-0.13.0-alpha-7b36694_linux-trusty-amd64.deb && \
 	rm -fr /tmp/*
 
 COPY pdfgen /usr/local/bin/
+
+CMD ["/usr/local/bin/pdfgen"]
