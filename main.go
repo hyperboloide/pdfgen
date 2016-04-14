@@ -50,30 +50,17 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	if err := tmpl.WritePDF(srv.BaseURL(), w); err != nil {
 		log.Print(err)
 		statError(w, http.StatusInternalServerError)
+		return
 	}
 }
 
 func main() {
 	configRead()
 
-	nb := len(Templates)
-	switch nb {
-	case 0:
-		fmt.Println("No template found, exiting.")
-		return
-	case 1:
-		fmt.Println("1 template found:")
-	default:
-		fmt.Printf("%d templates found:\n", nb)
-	}
-	for k, _ := range Templates {
-		fmt.Printf("  - %s\n", k)
-	}
-
-	fmt.Printf("accepting connections on %s:%s\n", Addr, Port)
-
 	r := mux.NewRouter()
 	r.HandleFunc("/{template}", Handler)
+
+	fmt.Printf("accepting connections on %s:%s\n", Addr, Port)
 
 	err := http.ListenAndServe(
 		fmt.Sprintf("%s:%s", Addr, Port),

@@ -42,8 +42,6 @@ func configRead() {
 		log.Fatalf("invalid templates dir '%s'", path)
 	}
 
-	fmt.Printf("looking for templates in directory:\n%s\n\n", Root)
-
 	if fi, err := ioutil.ReadDir(Root); err != nil {
 		log.Fatalf("failed to read templates dir '%s'", Root)
 	} else {
@@ -52,5 +50,19 @@ func configRead() {
 				Templates[i.Name()] = NewTemplate(Root, i.Name())
 			}
 		}
+	}
+
+	nb := len(Templates)
+	switch nb {
+	case 0:
+		fmt.Println("No template found, exiting.")
+		return
+	case 1:
+		fmt.Sprintf("1 template found in '%s':", Root)
+	default:
+		fmt.Printf("%d templates found in '%s':\n", nb, Root)
+	}
+	for k, _ := range Templates {
+		fmt.Printf("  - %s\n", k)
 	}
 }

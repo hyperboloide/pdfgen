@@ -13,12 +13,23 @@ RUN apt-get -qq update && \
 	libxext6 \
 	libxrender1 \
 	xfonts-base \
-	xfonts-75dpi
+	xfonts-75dpi \
+	xz-utils \
+	curl
 
-ADD https://bitbucket.org/wkhtmltopdf/wkhtmltopdf/downloads/wkhtmltox-0.13.0-alpha-7b36694_linux-trusty-amd64.deb /tmp/
-RUN dpkg -i /tmp/wkhtmltox-0.13.0-alpha-7b36694_linux-trusty-amd64.deb && \
-	rm -fr /tmp/*
 
-COPY pdfgen /usr/local/bin/
+WORKDIR /tmp/
 
-CMD ["/usr/local/bin/pdfgen"]
+ADD http://download.gna.org/wkhtmltopdf/0.12/0.12.3/wkhtmltox-0.12.3_linux-generic-amd64.tar.xz .
+
+RUN tar xf wkhtmltox-0.12.3_linux-generic-amd64.tar.xz &&\
+	mv wkhtmltox/bin/wkhtmltopdf /usr/local/bin/ && \
+	rm -fr /tmp
+
+COPY pdfgen /pdfgen
+
+EXPOSE 8888
+ENV PDFGEN_PORT=8888
+ENV PDFGEN_ADDR=0.0.0.0
+
+CMD ["/pdfgen"]
