@@ -27,10 +27,16 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != "POST" && r.Method != "PUT" {
 		statError(w, http.StatusMethodNotAllowed)
+
+	} else if r.Header.Get("Content-type") != "application/json" {
+		statError(w, http.StatusBadRequest)
+
 	} else if tmpl, exists := Templates[name]; !exists {
 		statError(w, http.StatusNotFound)
+
 	} else if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
 		statError(w, http.StatusBadRequest)
+
 	} else {
 		w.Header().Set("Content-Type", "application/pdf")
 		srv := NewServerEmulator(data, tmpl)
@@ -44,20 +50,24 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func main() {
-	configRead()
-
+func Router() http.Handler {
 	r := chi.NewRouter()
+	r.Use(middleware.StripSlashes)
 	r.Use(middleware.Logger)
 	r.Use(middleware.DefaultCompress)
 	r.HandleFunc("/{template}", Handler)
+	return r
+}
+
+func main() {
+	ConfigRead()
 
 	addr := fmt.Sprintf("%s:%d",
 		viper.GetString("addr"),
 		viper.GetInt("port"),
 	)
 	log.Printf("accepting connections on %s", addr)
-	if err := http.ListenAndServe(addr, r); err != nil {
+	if err := http.ListenAndServe(addr, Router()); err != nil {
 		log.Fatal(err)
 	}
 }

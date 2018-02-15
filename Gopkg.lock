@@ -2,10 +2,10 @@
 
 
 [[projects]]
+  branch = "master"
   name = "github.com/flosch/pongo2"
   packages = ["."]
-  revision = "5e81b817a0c48c1c57cdf1a9056cf76bdee02ca9"
-  version = "v3.0"
+  revision = "1f4be1efe3b3529b7e58861f75d70120a9567dc4"
 
 [[projects]]
   name = "github.com/fsnotify/fsnotify"
@@ -26,6 +26,12 @@
   revision = "23c074d0eceb2b8a5bfdbb271ab780cde70f05a8"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/juju/errors"
+  packages = ["."]
+  revision = "c7d06af17c68cd34c835053720b21f6549d9b0ee"
+
+[[projects]]
   name = "github.com/magiconair/properties"
   packages = ["."]
   revision = "c3beff4c2358b44d0493c7dda585e7db7ff28ae6"
@@ -36,6 +42,18 @@
   name = "github.com/mitchellh/mapstructure"
   packages = ["."]
   revision = "a4e142e9c047c904fa2f1e144d9a84e6133024bc"
+
+[[projects]]
+  name = "github.com/onsi/ginkgo"
+  packages = [".","config","internal/codelocation","internal/containernode","internal/failer","internal/leafnodes","internal/remote","internal/spec","internal/spec_iterator","internal/specrunner","internal/suite","internal/testingtproxy","internal/writer","reporters","reporters/stenographer","reporters/stenographer/support/go-colorable","reporters/stenographer/support/go-isatty","types"]
+  revision = "9eda700730cba42af70d53180f9dcce9266bc2bc"
+  version = "v1.4.0"
+
+[[projects]]
+  name = "github.com/onsi/gomega"
+  packages = [".","format","internal/assertion","internal/asyncassertion","internal/oraclematcher","internal/testingtsupport","matchers","matchers/support/goraph/bipartitegraph","matchers/support/goraph/edge","matchers/support/goraph/node","matchers/support/goraph/util","types"]
+  revision = "003f63b7f4cff3fc95357005358af2de0f5fe152"
+  version = "v1.3.0"
 
 [[projects]]
   name = "github.com/pelletier/go-toml"
@@ -81,6 +99,12 @@
 
 [[projects]]
   branch = "master"
+  name = "golang.org/x/net"
+  packages = ["html","html/atom","html/charset"]
+  revision = "f5dfe339be1d06f81b22525fe34671ee7d2c8904"
+
+[[projects]]
+  branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
   revision = "37707fdb30a5b38865cfb95e5aab41707daec7fd"
@@ -88,8 +112,14 @@
 [[projects]]
   branch = "master"
   name = "golang.org/x/text"
-  packages = ["internal/gen","internal/triegen","internal/ucd","transform","unicode/cldr","unicode/norm"]
+  packages = ["encoding","encoding/charmap","encoding/htmlindex","encoding/internal","encoding/internal/identifier","encoding/japanese","encoding/korean","encoding/simplifiedchinese","encoding/traditionalchinese","encoding/unicode","internal/gen","internal/tag","internal/triegen","internal/ucd","internal/utf8internal","language","runes","transform","unicode/cldr","unicode/norm"]
   revision = "4e4a3210bb54bb31f6ab2cdca2edcc0b50c420c1"
+
+[[projects]]
+  name = "gopkg.in/go-playground/pool.v3"
+  packages = ["."]
+  revision = "e73cd3a5ded835540c5cf4778488579c5b357d68"
+  version = "v3.1.1"
 
 [[projects]]
   branch = "v2"
@@ -100,6 +130,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "d92bdcf6ef34f38b95a98669fc36b8fe3823eb4198d4c125b8bd72e003e10630"
+  inputs-digest = "59e1b206e220e9dd57c1556227702005123ab22df207b70c23a44793747b13ec"
   solver-name = "gps-cdcl"
   solver-version = 1

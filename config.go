@@ -26,7 +26,7 @@ func init() {
 	viper.BindEnv("templates")
 }
 
-func isValidTemplateDir(path string) bool {
+func IsValidTemplateDir(path string) bool {
 	if fi, err := os.Stat(path); os.IsNotExist(err) {
 		return false
 	} else {
@@ -34,16 +34,16 @@ func isValidTemplateDir(path string) bool {
 	}
 }
 
-func selectDir(choices []string) *string {
+func SelectDir(choices []string) *string {
 	for _, path := range choices {
-		if isValidTemplateDir(path) {
+		if IsValidTemplateDir(path) {
 			return &path
 		}
 	}
 	return nil
 }
 
-func configRead() {
+func ConfigRead() {
 	if _, err := exec.LookPath("wkhtmltopdf"); err != nil {
 		log.Fatal("executable wkhtmltopdf could not be found in PATH")
 	}
@@ -54,9 +54,9 @@ func configRead() {
 		os.Getenv("HOME") + "/.templates",
 	}
 
-	if viper.GetString("templates") != "" && isValidTemplateDir(viper.GetString("templates")) {
+	if viper.GetString("templates") != "" && IsValidTemplateDir(viper.GetString("templates")) {
 		Root = viper.GetString("templates")
-	} else if pth := selectDir(choices); pth != nil {
+	} else if pth := SelectDir(choices); pth != nil {
 		Root = *pth
 	} else {
 		log.Fatal("template directory not found!")

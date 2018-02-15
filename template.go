@@ -20,7 +20,7 @@ type Template struct {
 func (t *Template) BuildParams(url string) []string {
 	params := []string{
 		fmt.Sprintf("%s/main", url),
-		"--disable-smart-shrinking",
+		// "--disable-smart-shrinking",
 	}
 
 	if t.Footer != nil {
@@ -39,16 +39,19 @@ func (t *Template) WritePDF(baseUrl string, w io.Writer) error {
 	}
 
 	errChan := make(chan error)
+	if err := cmd.Start(); err != nil {
+		return err
+	}
+
 	go func() {
 		_, err := io.Copy(w, output)
 		errChan <- err
 	}()
-	if err := cmd.Start(); err != nil {
-		return err
-	} else if err := cmd.Wait(); err != nil {
+
+	if err := <-errChan; err != nil {
 		return err
 	}
-	return <-errChan
+	return cmd.Wait()
 }
 
 func fileExists(path string) bool {
