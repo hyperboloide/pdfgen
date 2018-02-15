@@ -5,16 +5,33 @@
 
 HTTP service to generate PDF from Json requests
 
-## Install
+## Install and run
 
-There is docker container :
+The recommended method is to use the docker container by mounting your template
+directory (here with the provided example `template` directory):
 
+```sh
+docker run --rm -it -p 8888:8888 \
+  --mount src=$(CURDIR)/templates/,target=/etc/pdfgen/templates,type=bind \
+  hyperboloide/pdfgen
 ```
-docker run -d \
-    -v ~/my_templates/:/templates \
-    -e PDFGEN_TEMPLATES=/templates \
-    hyperboloide/pdfgen
+
+If you rather not using Docker, you need to install [wkhtmltopdf](https://wkhtmltopdf.org/downloads.html)
+first, then run:
+```sh
+go install github.com/hyperboloide/pdfgen
+PDFGEN_TEMPLATES=./templates pdfgen
 ```
+
+Once installed you can test with something like this:
+```sh
+curl -H "Content-Type: application/json" -X POST -d @my_json_file.json \
+  http://localhost:8888/invoice > result.pdf
+```
+
+Note that the rendering may differ depending on your os (especially OSX) and installed fonts,
+that's why it is recommended to test and develop on the Docker environment to
+get the same result in production.
 
 ## Templates
 
@@ -31,11 +48,13 @@ can be generated with a `application/json` POST request:
 {"user": "fred"}
 ```
 
-The response is a of type `application/pdf` and contains the resulting PDF.
+The response is of type `application/pdf` and contains the resulting PDF.
 
-Each PDF template should be in it's own directory under the root directory defined in `PDFGEN_TEMPLATES`.
+Each PDF template should be in it's own directory under the root directory
+defined in the `PDFGEN_TEMPLATES` environment variable.
+
 The urls endpoints will be generated from these directories names. For example a template
-in directory `invoice` will be a reachable at a url that look like that: `http://pdfgen:8888/invoice`
+in the directory `invoice` will be a reachable at a url that look like that: `http://host:port/invoice`
 
 The template directory must contain an `index.html` file and optionnaly
 a `footer.html` file. Other assets like images and CSS should be in
@@ -50,7 +69,10 @@ you should have:
 <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css" media='screen,print'>
 ```
 
-Finally don't forget to set the `PDFGEN_TEMPLATES` env variable the path of your templates parent directory.
+Finally don't forget to set the `PDFGEN_TEMPLATES` env variable to the path of
+your templates parent directory
+Alternatively you copy your templates to either :
+`/etc/pdfgen/templates` or `~/.templates`.
 
 ## Adding fonts
 
