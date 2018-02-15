@@ -47,7 +47,11 @@ func configRead() {
 	} else {
 		for _, i := range fi {
 			if i.IsDir() && i.Name()[0] != '.' {
-				Templates[i.Name()] = NewTemplate(Root, i.Name())
+				if t, err := NewTemplate(Root, i.Name()); err != nil {
+					log.Fatal(err)
+				} else {
+					Templates[i.Name()] = t
+				}
 			}
 		}
 	}
@@ -58,7 +62,7 @@ func configRead() {
 		fmt.Println("No template found, exiting.")
 		return
 	case 1:
-		fmt.Sprintf("1 template found in '%s':", Root)
+		fmt.Printf("1 template found in '%s':\n", Root)
 	default:
 		fmt.Printf("%d templates found in '%s':\n", nb, Root)
 	}

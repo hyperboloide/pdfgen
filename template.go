@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"io"
-	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -19,7 +18,10 @@ type Template struct {
 }
 
 func (t *Template) BuildParams(url string) []string {
-	params := []string{fmt.Sprintf("%s/main", url)}
+	params := []string{
+		fmt.Sprintf("%s/main", url),
+		"--disable-smart-shrinking",
+	}
 
 	if t.Footer != nil {
 		params = append(params, "--footer-html", fmt.Sprintf("%s/footer", url))
@@ -56,33 +58,28 @@ func fileExists(path string) bool {
 	return true
 }
 
-func NewTemplate(root, path string) *Template {
+func NewTemplate(root, path string) (*Template, error) {
 	t := &Template{
 		Url:     path,
 		RootDir: filepath.Join(root, path),
 	}
 
-	// fi, err := ioutil.ReadDir(t.RootDir)
-	// if err != nil {
-	// 	log.Fatalf("failed to open template dir '%s'", t.RootDir)
-	// }
-
 	indexPath := filepath.Join(t.RootDir, "index.html")
 	if !fileExists(indexPath) {
-		log.Fatal("template index '%s' not found.")
+		return nil, fmt.Errorf("template %s not found.", indexPath)
 	} else if tmpl, err := pongo2.FromFile(indexPath); err != nil {
-		log.Fatal(err)
+		return nil, err
 	} else {
 		t.Index = tmpl
 	}
 
 	footerPath := filepath.Join(t.RootDir, "footer.html")
 	if !fileExists(footerPath) {
-		return t
+		return t, nil
 	} else if tmpl, err := pongo2.FromFile(footerPath); err != nil {
-		log.Fatal(err)
+		return nil, err
 	} else {
 		t.Footer = tmpl
 	}
-	return t
+	return t, nil
 }

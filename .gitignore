@@ -26,3 +26,5 @@ pdfgen
 templates/demo.pdf
 vendor
 glide.lock
+templates/invoice/bower_components
+.DS_Store

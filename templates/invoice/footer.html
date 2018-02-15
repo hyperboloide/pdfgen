@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+  .footer {
+    font-size: 9px;
+  }
+</style>
+
+<div class="row footer">
+   <div class="col-xs-12">
+
+       <div class="text-center">
+
+           <em>
+             {% if address.vat %}
+             &#42;Taux légal de TVA - Article 259-1° du CGI
+             {% else %}
+             &#42;Taux légal de TVA - Article 259 D du CGI
+             {% endif %}
+           </em>
+
+       </div>
+
+       <hr>
+
+       <div class="pull-right">
+         <img src="hyperboloide_banner.png" style="max-height:40px"/>
+       </div>
+
+         <address>
+           Hyperboloide - SAS au capital de 5000 euros<br>
+           1 rue Jean Effel - 17000 La Rochelle, France<br>
+           808 276 364 - R.C.S. La Rochelle<br>
+
+           <a href="https://hyperboloide.com">https://hyperboloide.com</a> -
+           <a href="mailto:contact@hyperboloide.com">contact@hyperboloide.com</a>
+           <br>
+
+         </address>
+
+
+   </div>
+</div>
+
+{% endblock %}

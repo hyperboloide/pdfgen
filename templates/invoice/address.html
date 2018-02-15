@@ -1,0 +1,36 @@
+<div class="row">
+  <div class="col-xs-12">
+
+    <strong>Facturé à :</strong>
+    <br>
+
+    Numéro de client: {{ client_id }}
+    <br>
+
+    {{ address.name }}
+    <br>
+
+    {% if address.company %}
+    {{ address.company }}
+    <br>
+    {% endif %}
+
+    {{ address.addr1 }}
+    <br>
+
+    {% if address.addr2 %}
+    {{ address.addr2 }}
+    <br>
+    {% endif %}
+
+    {{ address.zip }} {{ address.city }}
+    <br>
+
+    {% if address.vat %}
+    N° TVA:
+    {{ address.vat }}
+    {% endif %}
+
+  </div>
+
+</div>

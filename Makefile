@@ -3,8 +3,7 @@ VERSION = 1.0.1
 DOCKERID = hyperboloide
 
 
-all:
-	go build
+all: container
 
 clean:
 	rm -fr $(NAME)
@@ -22,4 +21,13 @@ container: clean
 push:
 	docker push     $(DOCKERID)/$(NAME)
 
-.PHONY: all clean fmt test container push
+run:
+	docker run \
+		--name pdfgen \
+		--rm \
+		-it \
+		-p 8888:8888 \
+		--mount src=$(CURDIR)/templates/,target=/templates,type=bind \
+		$(DOCKERID)/$(NAME)
+
+.PHONY: all clean fmt test container push run

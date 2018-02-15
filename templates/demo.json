@@ -1,34 +1,33 @@
 {
-    "id": 123456,
-    "date": "2015/12/9",
-    "client": {
-        "fullName": "Jean Dupont",
-        "company": "Forutnate Business SAS",
-        "address1": "42 Avenue des Champs-Élysées",
-        "zip": 75000,
-        "city": "Paris",
-        "country": "France"
-    },
-    "items": [
-        {
-            "label": "Blue shirt",
-            "description": "A shirt that looks good on you",
-            "quantity": 1,
-            "unitPrice": 20,
-            "total": 20
-        },
-        {
-            "label": "Cat Food",
-            "description": "Because you care about him",
-            "quantity": 7,
-            "unitPrice": 2,
-            "total": 14
-        }
-    ],
-    "subTotal": "34",
-    "vat": "20",
-    "tax": "6.80",
-    "total": "40.80",
-    "due": "2015/12/9",
-    "paid": "2015/12/9"
+	"id": "001234",
+	"client_id": "abcdefg",
+	"created": "15/02/2018",
+	"address": {
+		"id": 1,
+		"created": "2016-04-13T13:39:07.111162Z",
+		"user_id": 1,
+		"name": "Frederic Delbos",
+		"email": "contact@hyperboloide.com",
+		"company": "Example SAS",
+		"vat": "123456789",
+		"addr1": "1 rue Jean Effel",
+		"city": "La Rochelle",
+		"zip": "17000"
+	},
+	"start_date": "13/04/2016",
+	"end_date": "13/04/2016",
+	"subtotal": "10,00",
+	"total": "12,00",
+	"tax": "2,00",
+	"tax_percent": "20,00",
+	"paid": true,
+	"lines": [{
+		"amount": "10,00",
+		"unit_price": "10,00",
+		"quantity": 1,
+		"start_date": "13/04/2016",
+		"end_date": "13/05/2016",
+		"description": "",
+		"title": "Bronze Plan"
+	}]
 }

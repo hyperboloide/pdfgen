@@ -1,0 +1,94 @@
+<div class="row">
+  <div class="col-xs-12">
+
+      <table class="table table-bordered table-condensed">
+
+        <tr>
+          <th class="text-center">Désignation</th>
+          <th class="text-center">Période</th>
+          <th class="text-center">Quantité</th>
+          <th class="text-center">PU HT</th>
+          <th class="text-center">Total HT</th>
+        </tr>
+
+        {% for line in lines %}
+        <tr>
+
+          <td class="text-center">
+              {{ line.title }}
+
+              {% if line.description %}
+              <br>
+              <small>{{ line.description }}</small>
+              {% endif %}
+          </td>
+
+          <td class="text-center">
+            {{ line.start_date}} - {{ line.end_date }}
+          </td>
+
+          <td class="text-right">
+            {{ line.quantity }}
+          </td>
+
+          <td class="text-right">
+            {{ line.unit_price }}&euro;
+          </td>
+
+          <td class="text-right">
+            {{ line.amount }}&euro;
+          </td>
+
+        </tr>
+        {% endfor %}
+
+      </table>
+
+
+  </div>
+
+</div>
+
+<div class="row">
+
+  <div class="col-xs-7">
+    {% if paid %}
+    <strong>Facture aquittée le :</strong>
+    &nbsp;{{ created }}
+    {% endif %}
+  </div>
+
+  <div class="col-xs-4 col-xs-offset-1">
+      <table class="table table-bordered table-condensed">
+
+        <tr>
+          <th>Sous-Total</th>
+          <td class="text-right">
+            {{ subtotal }}&euro;
+          </td>
+        </tr>
+
+        <tr>
+          <th>
+            TVA&#42; {{ tax_percent }}&#37;
+          </th>
+          <td class="text-right">
+            {{ tax }}&euro;
+          </td>
+        </tr>
+
+        <tr>
+          <th>Total TTC</th>
+          <td class="text-right">
+              {{ total }}&euro;
+          </td>
+        </tr>
+
+      </table>
+      <div class="text-center" style="margin-top: -15px;">
+        <strong>Date d'échéance :</strong>
+        {{ created }}
+      </div>
+
+  </div>
+</div>
