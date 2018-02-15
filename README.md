@@ -1,4 +1,8 @@
 # pdfgen
+[![Build Status](https://travis-ci.org/hyperboloide/pdfgen.svg?branch=master)](https://travis-ci.org/hyperboloide/pdfgen)
+[![Go Report Card](https://goreportcard.com/badge/github.com/hyperboloide/pdfgen)](https://goreportcard.com/report/github.com/hyperboloide/pdfgen)
+
+
 HTTP service to generate PDF from Json requests
 
 ## Install
@@ -31,14 +35,14 @@ The response is a of type `application/pdf` and contains the resulting PDF.
 
 Each PDF template should be in it's own directory under the root directory defined in `PDFGEN_TEMPLATES`.
 The urls endpoints will be generated from these directories names. For example a template
-in directory `invoice` will be a reachable at a url that look like that: `http://pdfgen:8888/invoice` 
+in directory `invoice` will be a reachable at a url that look like that: `http://pdfgen:8888/invoice`
 
-The template directory must contain an `index.html` file and optionnaly 
-a `footer.html` file. Other assets like images and CSS should be in 
-that directory too. 
+The template directory must contain an `index.html` file and optionnaly
+a `footer.html` file. Other assets like images and CSS should be in
+that directory too.
 Note that each PDF is generated in isolation and so
 your templates should use absolutes paths.
-For example if you use bower and have a path like that: 
+For example if you use bower and have a path like that:
 `invoices/bower_components/`
 you should have:
 
@@ -46,7 +50,7 @@ you should have:
 <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css" media='screen,print'>
 ```
 
-Finally don't forget to set the `PDFGEN_TEMPLATES` env variable the path of your templates parent directory. 
+Finally don't forget to set the `PDFGEN_TEMPLATES` env variable the path of your templates parent directory.
 
 ## Adding fonts
 
@@ -58,4 +62,3 @@ FROM hyperboloide/pdfgen
 COPY my_fonts /usr/local/share/fonts/
 RUN  fc-cache -f -v
 ```
-
