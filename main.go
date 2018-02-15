@@ -60,14 +60,11 @@ func Router() http.Handler {
 }
 
 func main() {
-	ConfigRead()
-
-	addr := fmt.Sprintf("%s:%d",
-		viper.GetString("addr"),
-		viper.GetInt("port"),
-	)
-	log.Printf("accepting connections on %s", addr)
-	if err := http.ListenAndServe(addr, Router()); err != nil {
+	if err := ConfigRead(); err != nil {
 		log.Fatal(err)
 	}
+
+	addr := fmt.Sprintf("%s:%d", viper.GetString("addr"), viper.GetInt("port"))
+	log.Printf("accepting connections on %s", addr)
+	http.ListenAndServe(addr, Router())
 }

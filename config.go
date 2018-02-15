@@ -1,9 +1,9 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -13,7 +13,7 @@ import (
 
 var (
 	Root, FakeUrl string
-	Templates     = make(map[string]*Template)
+	Templates     map[string]*Template
 )
 
 func init() {
@@ -43,37 +43,40 @@ func SelectDir(choices []string) *string {
 	return nil
 }
 
-func ConfigRead() {
+func ConfigRead() error {
 	if _, err := exec.LookPath("wkhtmltopdf"); err != nil {
-		log.Fatal("executable wkhtmltopdf could not be found in PATH")
+		return errors.New("executable wkhtmltopdf could not be found in PATH")
 	}
 
 	choices := []string{
-		"./templates",
 		"/etc/pdfgen/templates",
 		os.Getenv("HOME") + "/.templates",
 	}
 
-	if viper.GetString("templates") != "" && IsValidTemplateDir(viper.GetString("templates")) {
+	if viper.GetString("templates") != "" {
 		Root = viper.GetString("templates")
+		if !IsValidTemplateDir(Root) {
+			return errors.New("invalid template directory")
+		}
 	} else if pth := SelectDir(choices); pth != nil {
 		Root = *pth
 	} else {
-		log.Fatal("template directory not found!")
+		return errors.New("template directory not found")
 	}
 
 	var err error
 	if Root, err = filepath.Abs(Root); err != nil {
-		log.Fatalf("invalid templates dir '%s'", Root)
+		return fmt.Errorf("invalid templates dir '%s'", Root)
 	}
 
 	if fi, err := ioutil.ReadDir(Root); err != nil {
-		log.Fatalf("failed to read templates dir '%s'", Root)
+		return fmt.Errorf("failed to read templates dir '%s'", Root)
 	} else {
+		Templates = make(map[string]*Template)
 		for _, i := range fi {
 			if i.IsDir() && i.Name()[0] != '.' {
 				if t, err := NewTemplate(Root, i.Name()); err != nil {
-					log.Fatal(err)
+					return err
 				} else {
 					Templates[i.Name()] = t
 				}
@@ -84,8 +87,7 @@ func ConfigRead() {
 	nb := len(Templates)
 	switch nb {
 	case 0:
-		fmt.Println("No template found, exiting.")
-		return
+		return errors.New("No template found")
 	case 1:
 		fmt.Printf("1 template found in '%s':\n", Root)
 	default:
@@ -94,4 +96,5 @@ func ConfigRead() {
 	for k, _ := range Templates {
 		fmt.Printf("  - %s\n", k)
 	}
+	return nil
 }

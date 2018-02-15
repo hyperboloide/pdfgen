@@ -1,8 +1,12 @@
 package main_test
 
 import (
+	"io/ioutil"
+	"os"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"github.com/spf13/viper"
 
 	. "github.com/hyperboloide/pdfgen"
 )
@@ -36,6 +40,49 @@ var _ = Describe("Config", func() {
 			"./main.go",
 		}
 		Expect(SelectDir(dirs)).To(BeNil())
+	})
+
+	Context("bad path", func() {
+		path := os.Getenv("PATH")
+
+		_ = BeforeEach(func() {
+			os.Setenv("PATH", "")
+		})
+
+		_ = AfterEach(func() {
+			os.Setenv("PATH", path)
+		})
+
+		It("read the config and set the error", func() {
+			err := ConfigRead()
+			Expect(err).To(HaveOccurred())
+			Expect(err.Error()).To(Equal("executable wkhtmltopdf could not be found in PATH"))
+		})
+
+	})
+
+	It("set invalid template dir", func() {
+		viper.Set("templates", "invalid")
+		err := ConfigRead()
+		Expect(err).To(HaveOccurred())
+		Expect(err.Error()).To(Equal("invalid template directory"))
+	})
+
+	It("set invalid template dir", func() {
+		viper.Set("templates", "")
+		err := ConfigRead()
+		Expect(err).To(HaveOccurred())
+		Expect(err.Error()).To(Equal("template directory not found"))
+	})
+
+	It("no template found", func() {
+		dir, err := ioutil.TempDir("", "")
+		Expect(err).ToNot(HaveOccurred())
+		defer os.RemoveAll(dir)
+		viper.Set("templates", dir)
+		err = ConfigRead()
+		Expect(err).To(HaveOccurred())
+		Expect(err.Error()).To(Equal("No template found"))
 	})
 
 })
