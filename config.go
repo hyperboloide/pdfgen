@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"os"
 	"os/exec"
 	"path/filepath"
 
@@ -11,21 +12,35 @@ import (
 )
 
 var (
-	Addr, Port, Root, FakeUrl string
-	Templates                 = make(map[string]*Template)
+	Root, FakeUrl string
+	Templates     = make(map[string]*Template)
 )
 
 func init() {
 	viper.SetEnvPrefix("pdfgen")
+	viper.AutomaticEnv()
 
-	viper.BindEnv("port")
 	viper.SetDefault("port", "8888")
-
-	viper.BindEnv("addr")
 	viper.SetDefault("addr", "0.0.0.0")
 
 	viper.BindEnv("templates")
-	viper.SetDefault("templates", "./templates")
+}
+
+func isValidTemplateDir(path string) bool {
+	if fi, err := os.Stat(path); os.IsNotExist(err) {
+		return false
+	} else {
+		return fi.Mode().IsDir()
+	}
+}
+
+func selectDir(choices []string) *string {
+	for _, path := range choices {
+		if isValidTemplateDir(path) {
+			return &path
+		}
+	}
+	return nil
 }
 
 func configRead() {
@@ -33,13 +48,23 @@ func configRead() {
 		log.Fatal("executable wkhtmltopdf could not be found in PATH")
 	}
 
-	Addr = viper.GetString("addr")
-	Port = viper.GetString("port")
+	choices := []string{
+		"./templates",
+		"/etc/pdfgen/templates",
+		os.Getenv("HOME") + "/.templates",
+	}
 
-	path := viper.GetString("templates")
+	if viper.GetString("templates") != "" && isValidTemplateDir(viper.GetString("templates")) {
+		Root = viper.GetString("templates")
+	} else if pth := selectDir(choices); pth != nil {
+		Root = *pth
+	} else {
+		log.Fatal("template directory not found!")
+	}
+
 	var err error
-	if Root, err = filepath.Abs(path); err != nil {
-		log.Fatalf("invalid templates dir '%s'", path)
+	if Root, err = filepath.Abs(Root); err != nil {
+		log.Fatalf("invalid templates dir '%s'", Root)
 	}
 
 	if fi, err := ioutil.ReadDir(Root); err != nil {

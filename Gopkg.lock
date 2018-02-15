@@ -2,10 +2,10 @@
 
 
 [[projects]]
-  branch = "master"
   name = "github.com/flosch/pongo2"
   packages = ["."]
-  revision = "1f4be1efe3b3529b7e58861f75d70120a9567dc4"
+  revision = "5e81b817a0c48c1c57cdf1a9056cf76bdee02ca9"
+  version = "v3.0"
 
 [[projects]]
   name = "github.com/fsnotify/fsnotify"
@@ -14,34 +14,16 @@
   version = "v1.4.7"
 
 [[projects]]
-  name = "github.com/gorilla/context"
-  packages = ["."]
-  revision = "1ea25387ff6f684839d82767c1733ff4d4d15d0a"
-  version = "v1.1"
-
-[[projects]]
-  name = "github.com/gorilla/handlers"
-  packages = ["."]
-  revision = "90663712d74cb411cbef281bc1e08c19d1a76145"
-  version = "v1.3.0"
-
-[[projects]]
-  name = "github.com/gorilla/mux"
-  packages = ["."]
-  revision = "53c1911da2b537f792e7cafcb446b05ffe33b996"
-  version = "v1.6.1"
+  name = "github.com/go-chi/chi"
+  packages = [".","middleware"]
+  revision = "e83ac2304db3c50cf03d96a2fcd39009d458bc35"
+  version = "v3.3.2"
 
 [[projects]]
   branch = "master"
   name = "github.com/hashicorp/hcl"
   packages = [".","hcl/ast","hcl/parser","hcl/scanner","hcl/strconv","hcl/token","json/parser","json/scanner","json/token"]
   revision = "23c074d0eceb2b8a5bfdbb271ab780cde70f05a8"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/juju/errors"
-  packages = ["."]
-  revision = "c7d06af17c68cd34c835053720b21f6549d9b0ee"
 
 [[projects]]
   name = "github.com/magiconair/properties"
@@ -118,6 +100,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "c860fcd158285e65e0c8c07b09d1487020c4545a23f5233bb86da5cc2ecb4df0"
+  inputs-digest = "d92bdcf6ef34f38b95a98669fc36b8fe3823eb4198d4c125b8bd72e003e10630"
   solver-name = "gps-cdcl"
   solver-version = 1

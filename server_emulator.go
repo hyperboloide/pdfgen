@@ -4,26 +4,13 @@ import (
 	"net/http"
 	"net/http/httptest"
 
-	"github.com/gorilla/mux"
+	"github.com/go-chi/chi"
 )
 
 type ServerEmulator struct {
 	Data map[string]interface{}
 	Tmpl *Template
 	ts   *httptest.Server
-}
-
-func NewServerEmulator(d map[string]interface{}, t *Template) *ServerEmulator {
-	s := &ServerEmulator{
-		Data: d,
-		Tmpl: t,
-	}
-	r := mux.NewRouter()
-	r.HandleFunc("/main", s.MainHandler)
-	r.HandleFunc("/footer", s.FooterHandler)
-	r.PathPrefix("/").Handler(http.FileServer(http.Dir(s.Tmpl.RootDir)))
-	s.ts = httptest.NewServer(r)
-	return s
 }
 
 func (s *ServerEmulator) Close() {
@@ -46,4 +33,17 @@ func (s *ServerEmulator) FooterHandler(w http.ResponseWriter, r *http.Request) {
 	} else if err := s.Tmpl.Footer.ExecuteWriterUnbuffered(s.Data, w); err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 	}
+}
+
+func NewServerEmulator(d map[string]interface{}, t *Template) *ServerEmulator {
+	s := &ServerEmulator{
+		Data: d,
+		Tmpl: t,
+	}
+	r := chi.NewRouter()
+	r.HandleFunc("/main", s.MainHandler)
+	r.HandleFunc("/footer", s.FooterHandler)
+	r.Mount("/", http.FileServer(http.Dir(s.Tmpl.RootDir)))
+	s.ts = httptest.NewServer(r)
+	return s
 }

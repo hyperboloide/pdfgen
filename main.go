@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 
-	"github.com/gorilla/handlers"
-	"github.com/gorilla/mux"
+	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
+	"github.com/spf13/viper"
 	"github.com/streamrail/concurrent-map"
 )
 
@@ -22,52 +22,42 @@ func statError(w http.ResponseWriter, status int) {
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
+	name := chi.URLParam(r, "template")
+	var data map[string]interface{}
+
 	if r.Method != "POST" && r.Method != "PUT" {
 		statError(w, http.StatusMethodNotAllowed)
-		return
-	}
-
-	vars := mux.Vars(r)
-	name := vars["template"]
-	tmpl, exists := Templates[name]
-	if exists == false {
+	} else if tmpl, exists := Templates[name]; !exists {
 		statError(w, http.StatusNotFound)
-		return
-	}
-
-	decoder := json.NewDecoder(r.Body)
-	var data map[string]interface{}
-	if err := decoder.Decode(&data); err != nil {
-		log.Print(err)
+	} else if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
 		statError(w, http.StatusBadRequest)
-		return
+	} else {
+		w.Header().Set("Content-Type", "application/pdf")
+		srv := NewServerEmulator(data, tmpl)
+		defer srv.Close()
+
+		if err := tmpl.WritePDF(srv.BaseURL(), w); err != nil {
+			log.Print(err)
+			statError(w, http.StatusInternalServerError)
+		}
 	}
 
-	w.Header().Set("Content-Type", "application/pdf")
-	srv := NewServerEmulator(data, tmpl)
-	defer srv.Close()
-
-	if err := tmpl.WritePDF(srv.BaseURL(), w); err != nil {
-		log.Print(err)
-		statError(w, http.StatusInternalServerError)
-		return
-	}
 }
 
 func main() {
 	configRead()
 
-	r := mux.NewRouter()
+	r := chi.NewRouter()
+	r.Use(middleware.Logger)
+	r.Use(middleware.DefaultCompress)
 	r.HandleFunc("/{template}", Handler)
 
-	fmt.Printf("accepting connections on %s:%s\n", Addr, Port)
-
-	err := http.ListenAndServe(
-		fmt.Sprintf("%s:%s", Addr, Port),
-		handlers.LoggingHandler(
-			os.Stdout,
-			handlers.CompressHandler(r)))
-	if err != nil {
+	addr := fmt.Sprintf("%s:%d",
+		viper.GetString("addr"),
+		viper.GetInt("port"),
+	)
+	log.Printf("accepting connections on %s", addr)
+	if err := http.ListenAndServe(addr, r); err != nil {
 		log.Fatal(err)
 	}
 }
