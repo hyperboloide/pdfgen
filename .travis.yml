@@ -8,5 +8,21 @@ install:
   - go get -v -t ./...
   - go get github.com/onsi/ginkgo/ginkgo
   - go get github.com/onsi/gomega
+  - sudo apt-get update
+  - sudo apt-get -qq update && \
+  	apt-get -qqy install \
+    libssl1.0.0 \
+  	fontconfig \
+  	libfontconfig1 \
+  	libfreetype6 \
+  	libjpeg-turbo8 \
+  	libx11-6 \
+  	libxext6 \
+  	libxrender1 \
+  	xfonts-base \
+  	xfonts-75dpi \
+  	xz-utils
+  - sudo apt-get install -yy https://bitbucket.org/wkhtmltopdf/wkhtmltopdf/downloads/wkhtmltox-0.13.0-alpha-7b36694_linux-trusty-amd64.deb
+  - sudo dpkg -i wkhtmltox-0.13.0-alpha-7b36694_linux-trusty-amd64.deb
 
 script: ginkgo -race -cover
