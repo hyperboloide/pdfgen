@@ -2,7 +2,6 @@ NAME = pdfgen
 VERSION = 1.0.1
 DOCKERID = hyperboloide
 
-
 all: container
 
 clean:
@@ -27,7 +26,7 @@ run:
 		--rm \
 		-it \
 		-p 8888:8888 \
-		--mount src=$(CURDIR)/templates/,target=/templates,type=bind \
+		--mount src=$(CURDIR)/templates/,target=/etc/pdfgen/templates,type=bind \
 		$(DOCKERID)/$(NAME)
 
 .PHONY: all clean fmt test container push run
