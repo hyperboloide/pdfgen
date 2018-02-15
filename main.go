@@ -9,11 +9,6 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/spf13/viper"
-	"github.com/streamrail/concurrent-map"
-)
-
-var (
-	Sessions = cmap.New()
 )
 
 func statError(w http.ResponseWriter, status int) {
@@ -21,6 +16,8 @@ func statError(w http.ResponseWriter, status int) {
 	http.Error(w, msg, status)
 }
 
+// Handler is the main http handler, it will respond only to POST or
+// PUT requests that match the template name (ex: /my_template)
 func Handler(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "template")
 	var data map[string]interface{}
@@ -50,6 +47,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// Router builds the http router.
 func Router() http.Handler {
 	r := chi.NewRouter()
 	r.Use(middleware.StripSlashes)
@@ -66,5 +64,7 @@ func main() {
 
 	addr := fmt.Sprintf("%s:%d", viper.GetString("addr"), viper.GetInt("port"))
 	log.Printf("accepting connections on %s", addr)
-	http.ListenAndServe(addr, Router())
+	if err := http.ListenAndServe(addr, Router()); err != nil {
+		log.Fatal(err)
+	}
 }

@@ -20,14 +20,19 @@ var _ = Describe("Main", func() {
 	var docSize int
 	var js []byte
 
-	It("should setup the config and start the test server", func() {
+	_ = BeforeEach(func() {
 		viper.Set("templates", "./templates")
-		ConfigRead()
+		err := ConfigRead()
+		Expect(err).ToNot(HaveOccurred())
 
 		srv = httptest.NewServer(Router())
 		tmp, err := ioutil.ReadFile("./templates/demo.json")
 		Expect(err).To(BeNil())
 		js = tmp
+	})
+
+	_ = AfterEach(func() {
+		srv.Close()
 	})
 
 	It("should respond StatusMethodNotAllowed to GET requests", func() {

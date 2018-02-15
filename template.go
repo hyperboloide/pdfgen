@@ -10,13 +10,14 @@ import (
 	"github.com/flosch/pongo2"
 )
 
+// Template represents the html template that will be rendered as a PDF.
 type Template struct {
 	RootDir string
-	Url     string
 	Index   *pongo2.Template
 	Footer  *pongo2.Template
 }
 
+// BuildParams creates the params for wkhtmltopdf
 func (t *Template) BuildParams(url string) []string {
 	params := []string{
 		fmt.Sprintf("%s/main", url),
@@ -30,8 +31,10 @@ func (t *Template) BuildParams(url string) []string {
 	return params
 }
 
-func (t *Template) WritePDF(baseUrl string, w io.Writer) error {
-	params := t.BuildParams(baseUrl)
+// WritePDF executes wkhtmltopdf with the correct params and
+// writes the output to the provided io.Writer
+func (t *Template) WritePDF(baseURL string, w io.Writer) error {
+	params := t.BuildParams(baseURL)
 	cmd := exec.Command("wkhtmltopdf", params...)
 	output, err := cmd.StdoutPipe()
 	if err != nil {
@@ -61,15 +64,15 @@ func fileExists(path string) bool {
 	return true
 }
 
+// NewTemplate creates and initialize a template from a path
 func NewTemplate(root, path string) (*Template, error) {
 	t := &Template{
-		Url:     path,
 		RootDir: filepath.Join(root, path),
 	}
 
 	indexPath := filepath.Join(t.RootDir, "index.html")
 	if !fileExists(indexPath) {
-		return nil, fmt.Errorf("template %s not found.", indexPath)
+		return nil, fmt.Errorf("template %s not found", indexPath)
 	} else if tmpl, err := pongo2.FromFile(indexPath); err != nil {
 		return nil, err
 	} else {

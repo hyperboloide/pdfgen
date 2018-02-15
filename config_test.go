@@ -13,16 +13,16 @@ import (
 
 var _ = Describe("Config", func() {
 
-	It("IsValidTemplateDir should work in the 'templates' dir", func() {
-		Expect(IsValidTemplateDir("./templates")).To(BeTrue())
+	It("IsValidDir should work in the 'templates' dir", func() {
+		Expect(IsValidDir("./templates")).To(BeTrue())
 	})
 
-	It("IsValidTemplateDir should return false on a path that don't exists", func() {
-		Expect(IsValidTemplateDir("./do_not_exists")).To(BeFalse())
+	It("IsValidDir should return false on a path that don't exists", func() {
+		Expect(IsValidDir("./do_not_exists")).To(BeFalse())
 	})
 
-	It("IsValidTemplateDir should return false on a path that is not a directory", func() {
-		Expect(IsValidTemplateDir("./main.go")).To(BeFalse())
+	It("IsValidDir should return false on a path that is not a directory", func() {
+		Expect(IsValidDir("./main.go")).To(BeFalse())
 	})
 
 	It("SelectDir should return a valid path", func() {
