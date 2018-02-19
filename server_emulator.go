@@ -46,6 +46,7 @@ func NewServerEmulator(d map[string]interface{}, t *Template) *ServerEmulator {
 	}
 	r := chi.NewRouter()
 	r.HandleFunc("/main", s.HandleTemplate(s.Tmpl.Index))
+	r.HandleFunc("/header", s.HandleTemplate(s.Tmpl.Header))
 	r.HandleFunc("/footer", s.HandleTemplate(s.Tmpl.Footer))
 	r.Mount("/", http.FileServer(http.Dir(s.Tmpl.RootDir)))
 	s.ts = httptest.NewServer(r)

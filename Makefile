@@ -1,5 +1,4 @@
 NAME = pdfgen
-VERSION = 1.0.1
 DOCKERID = hyperboloide
 
 all: container

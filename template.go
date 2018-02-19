@@ -15,6 +15,7 @@ type Template struct {
 	RootDir string
 	Index   *pongo2.Template
 	Footer  *pongo2.Template
+	Header  *pongo2.Template
 }
 
 // BuildParams creates the params for wkhtmltopdf
@@ -26,6 +27,9 @@ func (t *Template) BuildParams(url string) []string {
 
 	if t.Footer != nil {
 		params = append(params, "--footer-html", fmt.Sprintf("%s/footer", url))
+	}
+	if t.Header != nil {
+		params = append(params, "--header-html", fmt.Sprintf("%s/header", url))
 	}
 	params = append(params, "-")
 	return params
@@ -57,35 +61,28 @@ func (t *Template) WritePDF(baseURL string, w io.Writer) error {
 	return cmd.Wait()
 }
 
-func fileExists(path string) bool {
-	if _, err := os.Stat(path); os.IsNotExist(err) {
-		return false
+func loadFileIfExists(root, htmlPth string) (*pongo2.Template, error) {
+	jpth := filepath.Join(root, htmlPth)
+	if _, err := os.Stat(jpth); os.IsNotExist(err) {
+		return nil, nil
 	}
-	return true
+	return pongo2.FromFile(jpth)
 }
 
 // NewTemplate creates and initialize a template from a path
 func NewTemplate(root, path string) (*Template, error) {
-	t := &Template{
-		RootDir: filepath.Join(root, path),
-	}
+	root = filepath.Join(root, path)
+	t := &Template{RootDir: root}
+	var err error
 
-	indexPath := filepath.Join(t.RootDir, "index.html")
-	if !fileExists(indexPath) {
-		return nil, fmt.Errorf("template %s not found", indexPath)
-	} else if tmpl, err := pongo2.FromFile(indexPath); err != nil {
+	if t.Index, err = loadFileIfExists(root, "index.html"); err != nil {
 		return nil, err
-	} else {
-		t.Index = tmpl
-	}
-
-	footerPath := filepath.Join(t.RootDir, "footer.html")
-	if !fileExists(footerPath) {
-		return t, nil
-	} else if tmpl, err := pongo2.FromFile(footerPath); err != nil {
+	} else if t.Index == nil {
+		return nil, fmt.Errorf("file 'index.html' not found in directory %s", root)
+	} else if t.Header, err = loadFileIfExists(root, "header.html"); err != nil {
 		return nil, err
-	} else {
-		t.Footer = tmpl
+	} else if t.Footer, err = loadFileIfExists(root, "footer.html"); err != nil {
+		return nil, err
 	}
 	return t, nil
 }

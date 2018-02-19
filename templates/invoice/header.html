@@ -1,34 +1,9 @@
-<div class="row">
-  <div class="col-xs-8">
+{% extends "base.html" %}
 
-      <span class="h2">Facture</span>
-      <br>
-      <br>
+{% block content %}
 
-      Numéro: {{ id }}
-      <br>
-
-      Date d’émission: {{ created }}
-      <br>
-      <br>
-
-      {% include "address.html" %}
-  </div>
-
-  <div class="col-xs-4">
-
-    <address style="margin-left: 40px;">
-      <strong>Hyperboloide SAS</strong>
-      <br>
-
-      1 rue Jean Effel<br>
-
-      17000 La Rochelle<br>
-
-      France<br>
-
-      TVA : FR 18 808 276 364
-    </address>
-  </div>
-
+<div>
+  <h4>Important header!</h4>
 </div>
+
+{% endblock %}
