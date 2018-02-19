@@ -5,7 +5,7 @@
   branch = "master"
   name = "github.com/flosch/pongo2"
   packages = ["."]
-  revision = "1f4be1efe3b3529b7e58861f75d70120a9567dc4"
+  revision = "97eac295f74b5fbb7fd3113e35f4ccf3c816e389"
 
 [[projects]]
   name = "github.com/fsnotify/fsnotify"
@@ -93,15 +93,9 @@
 
 [[projects]]
   branch = "master"
-  name = "github.com/streamrail/concurrent-map"
-  packages = ["."]
-  revision = "8bf1e9bacbf65b10c81d0f4314cf2b1ebef728b5"
-
-[[projects]]
-  branch = "master"
   name = "golang.org/x/net"
   packages = ["html","html/atom","html/charset"]
-  revision = "f5dfe339be1d06f81b22525fe34671ee7d2c8904"
+  revision = "cbe0f9307d0156177f9dd5dc85da1a31abc5f2fb"
 
 [[projects]]
   branch = "master"
@@ -116,12 +110,6 @@
   revision = "4e4a3210bb54bb31f6ab2cdca2edcc0b50c420c1"
 
 [[projects]]
-  name = "gopkg.in/go-playground/pool.v3"
-  packages = ["."]
-  revision = "e73cd3a5ded835540c5cf4778488579c5b357d68"
-  version = "v3.1.1"
-
-[[projects]]
   branch = "v2"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
@@ -130,6 +118,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "59e1b206e220e9dd57c1556227702005123ab22df207b70c23a44793747b13ec"
+  inputs-digest = "24d2674426f4ab76f0a6e7bc80741d5b3fd420990083d5bdbeb8001028e1d445"
   solver-name = "gps-cdcl"
   solver-version = 1

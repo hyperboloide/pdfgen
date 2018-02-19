@@ -10,21 +10,21 @@ HTTP service to generate PDF from Json requests
 The recommended method is to use the docker container by mounting your template
 directory (here with the provided example `template` directory):
 
-```sh
+```
 docker run --rm -it -p 8888:8888 \
-  --mount src=$(CURDIR)/templates/,target=/etc/pdfgen/templates,type=bind \
+  --mount src=my_templates/,target=/etc/pdfgen/templates,type=bind \
   hyperboloide/pdfgen
 ```
 
 If you rather not using Docker, you need to install [wkhtmltopdf](https://wkhtmltopdf.org/downloads.html)
 first, then run:
-```sh
+```
 go install github.com/hyperboloide/pdfgen
 PDFGEN_TEMPLATES=./templates pdfgen
 ```
 
 Once installed you can test with something like this:
-```sh
+```
 curl -H "Content-Type: application/json" -X POST -d @my_json_file.json \
   http://localhost:8888/invoice > result.pdf
 ```

@@ -16,9 +16,9 @@ func statError(w http.ResponseWriter, status int) {
 	http.Error(w, msg, status)
 }
 
-// Handler is the main http handler, it will respond only to POST or
+// APIHandler is the public facing http handler, it will respond only to POST or
 // PUT requests that match the template name (ex: /my_template)
-func Handler(w http.ResponseWriter, r *http.Request) {
+func APIHandler(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "template")
 	var data map[string]interface{}
 
@@ -53,7 +53,7 @@ func Router() http.Handler {
 	r.Use(middleware.StripSlashes)
 	r.Use(middleware.Logger)
 	r.Use(middleware.DefaultCompress)
-	r.HandleFunc("/{template}", Handler)
+	r.HandleFunc("/{template}", APIHandler)
 	return r
 }
 

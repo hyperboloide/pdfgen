@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 
+	"github.com/flosch/pongo2"
 	"github.com/go-chi/chi"
 )
 
@@ -25,19 +26,15 @@ func (s *ServerEmulator) BaseURL() string {
 	return s.ts.URL
 }
 
-// MainHandler will build the main template (index.html) and render it
-func (s *ServerEmulator) MainHandler(w http.ResponseWriter, r *http.Request) {
-	if err := s.Tmpl.Index.ExecuteWriterUnbuffered(s.Data, w); err != nil {
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-	}
-}
-
-// FooterHandler will build the footer template (footer.html) and render it
-func (s *ServerEmulator) FooterHandler(w http.ResponseWriter, r *http.Request) {
-	if s.Tmpl.Footer == nil {
-		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
-	} else if err := s.Tmpl.Footer.ExecuteWriterUnbuffered(s.Data, w); err != nil {
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+// HandleTemplate will generate the HTML from the template and handle
+// the http request.
+func (s *ServerEmulator) HandleTemplate(tmpl *pongo2.Template) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if tmpl == nil {
+			http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		} else if err := tmpl.ExecuteWriterUnbuffered(s.Data, w); err != nil {
+			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		}
 	}
 }
 
@@ -48,8 +45,8 @@ func NewServerEmulator(d map[string]interface{}, t *Template) *ServerEmulator {
 		Tmpl: t,
 	}
 	r := chi.NewRouter()
-	r.HandleFunc("/main", s.MainHandler)
-	r.HandleFunc("/footer", s.FooterHandler)
+	r.HandleFunc("/main", s.HandleTemplate(s.Tmpl.Index))
+	r.HandleFunc("/footer", s.HandleTemplate(s.Tmpl.Footer))
 	r.Mount("/", http.FileServer(http.Dir(s.Tmpl.RootDir)))
 	s.ts = httptest.NewServer(r)
 	return s
